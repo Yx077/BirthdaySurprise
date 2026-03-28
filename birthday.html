@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Surprise 🎁</title>
+<style>
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#ffd6e8,#fff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    text-align:center;
+    overflow:hidden;
+}
+.bg{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+}
+.bg span{
+    position:absolute;
+    font-size:3rem;
+    opacity:0.12;
+    animation:float 20s linear infinite;
+}
+@keyframes float{
+    from{transform:translateY(100vh);}
+    to{transform:translateY(-120vh);}
+}
+.card{
+    position:relative;
+    z-index:1;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    max-width:340px;
+    width:90%;
+    max-height:85vh;
+    overflow:auto;
+}
+h1{
+    font-size:2.1rem;
+    font-weight:800;
+    margin-bottom:15px;
+}
+p{
+    font-size:1rem;
+    line-height:1.6;
+    white-space:pre-line;
+}
+button{
+    margin-top:20px;
+    padding:12px 22px;
+    font-size:1rem;
+    border:none;
+    border-radius:30px;
+    background:#ff5fa2;
+    color:white;
+    cursor:pointer;
+}
+button:hover{
+    background:#ff3f8e;
+}
+.hidden{
+    display:none;
+}
+.cake{
+    font-size:4rem;
+    margin:20px 0;
+    position:relative;
+}
+.confetti{
+    position:fixed;
+    width:10px;
+    height:10px;
+    top:0;
+    pointer-events:none;
+    z-index:2;
+    animation:fall 3s linear forwards;
+    border-radius:50%;
+}
+@keyframes fall{
+    0%{transform:translateY(0);}
+    100%{transform:translateY(500px);opacity:0;}
+}
+.puff{
+    position:absolute;
+    font-size:1.5rem;
+    animation:puff 0.8s ease-out forwards;
+}
+@keyframes puff{
+    0%{opacity:1; transform:translateY(0) scale(1);}
+    100%{opacity:0; transform:translateY(-50px) scale(1.5);}
+}
+</style>
+</head>
+<body>
+
+<div class="bg">
+<span style="left:5%">🎈</span>
+<span style="left:20%">🎂</span>
+<span style="left:40%">🎉</span>
+<span style="left:60%">🎁</span>
+<span style="left:80%">✨</span>
+<span style="left:90%">🎂</span>
+</div>
+
+<audio id="birthdaySong" src="https://actions.google.com/sounds/v1/ambiences/happy_birthday_song.ogg" loop></audio>
+
+<div class="card" id="step1">
+<h1>🎁 A gift for you</h1>
+<p>For my favourite cousin 🤍  
+I made this just for you…  
+Tap below to open your surprise ✨</p>
+<button onclick="openGift()">Open Gift</button>
+</div>
+
+<div class="card hidden" id="step2">
+<h1>🎂 It’s your birthday!</h1>
+<div class="cake" id="cake">🎂🕯️🕯️🕯️</div>
+<p>Make a wish before you continue 💫</p>
+<button onclick="openWish()">I made a wish</button>
+</div>
+
+<div class="card hidden" id="step3">
+<h1>💖 Happy Birthday</h1>
+<p id="typedText"></p>
+</div>
+
+<script>
+const message = `To my favourite cousin 🤍
+
+I just want you to know how special you truly are 😊💖 You have such a beautiful heart 💛, and the way you bring warmth and comfort into people’s lives never goes unnoticed 🌸. I’m genuinely so lucky to have you as my cousin 🥰.
+
+On your birthday 🎉🎂, I hope you remember how loved and appreciated you are, not just today, but always 🌟. You deserve happiness in the smallest moments 🌷, peace in your heart 🕊️, and success in everything you dream of ✨💫.
+
+I miss you more than I can even explain 😔💌, and I really wish I could see you soon. Things just don’t feel the same without you around 🤍.
+
+No matter what happens or how much time passes, you’ll always be my favourite cousin 💫💞.`;
+
+let i = 0;
+
+function typeWriter(){
+    if(i < message.length){
+        document.getElementById("typedText").innerHTML += message.charAt(i);
+        i++;
+        setTimeout(typeWriter,25);
+    }
+}
+
+function createConfetti(){
+    for(let i=0;i<50;i++){
+        let conf=document.createElement('div');
+        conf.className='confetti';
+        conf.style.left=Math.random()*100+'%';
+        conf.style.backgroundColor=`hsl(${Math.random()*360},70%,60%)`;
+        conf.style.width=Math.random()*12+4+'px';
+        conf.style.height=conf.style.width;
+        document.body.appendChild(conf);
+        setTimeout(()=>{conf.remove();},3000);
+    }
+}
+
+function blowOutCandles(){
+    const cake = document.getElementById('cake');
+    const candlePositions = [25, 50, 75]; // % positions for 3 candles
+
+    candlePositions.forEach(pos=>{
+        const puff = document.createElement('div');
+        puff.className='puff';
+        puff.style.left=pos+'%';
+        puff.style.top='-10px';
+        puff.innerText='💨';
+        cake.appendChild(puff);
+        setTimeout(()=>{puff.remove()},800);
+    });
+
+    // Replace cake with blown-out version after a short delay
+    setTimeout(()=>{ cake.innerText='🎂'; }, 500);
+}
+
+function openGift(){
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    let audio=document.getElementById('birthdaySong');
+    audio.volume=0.2;
+    audio.play();
+}
+
+function openWish(){
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.remove('hidden');
+    blowOutCandles();
+    createConfetti();
+    typeWriter();
+}
+</script>
+
+</body>
+</html>
